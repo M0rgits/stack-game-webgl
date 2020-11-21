@@ -607,6 +607,7 @@ class Hr {
 }
 class GUI {
   constructor(aspect) {
+
     new Hr("cam-props");
     new Text("Camera Position", "cam-props");
     new Br("cam-props");
@@ -627,6 +628,8 @@ class GUI {
     new Br("cam-props");
     this.aspect = new Slider("aspect", 0.01, 10, 0.1, aspect, "cam-props");
     new Hr("cam-props");
+
+
   }
 
   set_radius(radius)
