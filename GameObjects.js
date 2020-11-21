@@ -399,7 +399,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
   ////// GameEngine related
   //// update game time
-	window.onkeydown = function(ev) {
+	window.onclick = function(ev) {
     
 		gameObjects[level-1].component.script.isdead = true;
 		t1 = gameObjects[level-1].transform.translation;
@@ -424,7 +424,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
           xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
           xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
       }
-      
+
       location.reload();
       // oyun sıfırlanır.
       };
