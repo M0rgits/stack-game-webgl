@@ -1,5 +1,6 @@
 
 window.onload = function init() {
+
   const [gl, aspect] = setupWebGL();
   const hier = new Hierarchy(gl);
   const gui = new GUI(aspect);
@@ -404,6 +405,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
 	window.onkeydown = function(ev) {
 
+
 		gameObjects[level-1].component.script.isdead = true;
 		t1 = gameObjects[level-1].transform.translation;
 		z1 = t1[2][3];
@@ -415,10 +417,19 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
 		if(thisMinZ >= maxZ || thisMaxZ <= minZ) // 
 		{
-		alert("GAME OVER! Your Highscore is " + level);
-		location.reload();
-		// oyun sıfırlanır.
-		};
+      alert("GAME OVER! Your Highscore is " + level);
+
+      var name = prompt("Please enter you name","Anon");
+
+      var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+      var theUrl = "/update";
+      xmlhttp.open("POST", theUrl);
+      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
+
+      location.reload();
+      // oyun sıfırlanır.
+      };
 
 		if(thisMinZ > minZ) 
 		minZ = thisMinZ;
