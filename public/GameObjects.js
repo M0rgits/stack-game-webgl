@@ -1,4 +1,3 @@
-
 window.onload = function init() {
 
   const [gl, aspect] = setupWebGL();
@@ -18,7 +17,6 @@ class Script {
   update() {}
   onCollision() {}
 }
-
 
 class BlueCubeScript extends Script {
 
@@ -401,11 +399,8 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
   ////// GameEngine related
   //// update game time
-
-
-	window.onkeydown = function(ev) {
-
-
+	window.onclick = function(ev) {
+    
 		gameObjects[level-1].component.script.isdead = true;
 		t1 = gameObjects[level-1].transform.translation;
 		z1 = t1[2][3];
@@ -421,11 +416,14 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
       var name = prompt("Please enter you name","Anon");
 
-      var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-      var theUrl = "/update";
-      xmlhttp.open("POST", theUrl);
-      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
+      if(!name.includes("<"))
+      {
+          var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+          var theUrl = "/update";
+          xmlhttp.open("POST", theUrl);
+          xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
+      }
 
       location.reload();
       // oyun sıfırlanır.
