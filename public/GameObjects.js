@@ -8,6 +8,11 @@ window.onload = function init() {
   render(gl, hier.gameObjects, gui,2,2);
 };
 
+var left = -1.0;
+var right = 1.0;
+var ytop = 1.0;
+var bottom = -1.0;
+
 class Script {
   constructor() {
     this.gameObject = null;
@@ -18,11 +23,10 @@ class Script {
   onCollision() {}
 }
 
-class BlueCubeScript extends Script {
-
+class RightScript extends Script {
 	constructor(){
 		super();
-		this.direction = true;
+		this.direction = false;
 	}
 
 	start() {
@@ -30,18 +34,12 @@ class BlueCubeScript extends Script {
 	}
 
 	update() {
-		// update function runs for each draw operation
-		//this.gameObject.transform.rotation = mult(
-		//  rotateY(1),
-		//  this.gameObject.transform.rotation
-		//);
-
 		var velocity;
 
 		if(this.direction)
-		velocity = [0, 0, 0.005];
+		velocity = [0, 0, 0.002];
 		else
-		velocity = [0, 0, -0.005];
+		velocity = [0, 0, -0.002];
 		
 		const dt = GameTime.deltaTime;
 		const scaledVelocity = scale(dt, velocity);
@@ -53,8 +51,44 @@ class BlueCubeScript extends Script {
 		const t = this.gameObject.transform.translation;
 		const z = t[2][3];
 
-		if (z > 5 || z < -5) {
+		if (z > 2 || z < -2) {
 		this.direction=!this.direction;
+		}
+
+	}
+}
+
+
+class LeftScript extends Script {
+	constructor(){
+		super();
+		this.direction = false;
+	}
+
+	start() {
+		this.initialTranslation = this.gameObject.transform.translation;
+	}
+
+	update() {
+		var velocity;
+
+		if(this.direction)
+		velocity = [0.002, 0, 0];
+		else
+		velocity = [-0.002, 0, 0];
+		
+		const dt = GameTime.deltaTime;
+		const scaledVelocity = scale(dt, velocity);
+		const changeMatrix = translate(scaledVelocity);
+		this.gameObject.transform.translation = mult(
+		changeMatrix,
+		this.gameObject.transform.translation
+		);
+		const t = this.gameObject.transform.translation;
+		const x = t[0][3];
+
+		if (x > 2 || x < -2) {
+		  this.direction=!this.direction;
 		}
 
 	}
@@ -65,27 +99,30 @@ class Hierarchy {
     const gameObjects = {};
     this.gameObjects = gameObjects;
 
-	gameObjects[0] = new Cube( // first ground plate
-		0,                     
-		gl,
-		vec4(1, 0.40, 0.80, 1.0),
-		new Transform({
-			translation: translate(-4, 0, 0),
-			scaling: scalem(2, 0.5, 2)
-		   })
-	  );
+    gameObjects[0] = new Cube( // first ground plate
+      0,                     
+      gl,
+      vec4(1, 0.40, 0.80, 1.0),
+      new Transform({
+        translation: translate(0, -0.2, 0),
+        scaling: scalem(0.8, 0.1, 0.8)
+         })
+      );
+
+      // phi -30
+      // theta -135
 
     gameObjects[1] = new Cube( // second moving plate
       1,
       gl,
       buff,
       new Transform({
-		  translation: translate(-4, 0.5, -4),
-		  scaling: scalem(2, 0.5, 2)
+		  translation: translate(2, -0.1, 0),
+		  scaling: scalem(0.8, 0.1, 0.8)
 		 })
     );
     
-    const script = new BlueCubeScript();
+    const script = new LeftScript();
     script.gameObject = gameObjects[1];
     script.gameObjects = this.gameObjects;
     gameObjects[1].component.script = script;
@@ -112,7 +149,7 @@ class GameTime {
 //// camera parameters
 
 at = vec3(0.0, 0.0, 0);
-up = vec3(0.0, 0.5, 0);
+up = vec3(0.0, 1, 0);
 
 //// a class that represents the gameobject transform matrices
 class Transform {
@@ -391,8 +428,11 @@ function start(gameObjects) {
   }
 }
 
-var minZ=-1;
-var maxZ=1;
+var minZ=-0.4;
+var maxZ=0.4;
+var minX=-0.4;
+var maxX=0.4;
+var right_side=true;
 var buff= vec4(1,0.5,1,1);
 
 function render(gl, gameObjects, gui, timestamp, level) {
@@ -401,88 +441,120 @@ function render(gl, gameObjects, gui, timestamp, level) {
   //// update game time
 	window.onkeydown = function(ev) {
     
-		gameObjects[level-1].component.script.isdead = true;
-		t1 = gameObjects[level-1].transform.translation;
+    t1 = gameObjects[level-1].transform.translation;
 		z1 = t1[2][3];
+    x1 = t1[0][3];
 
-		var len=maxZ-minZ;
+    var lenX=maxX-minX;
+    var lenZ=maxZ-minZ;
 
-		thisMinZ = z1-len/2;
-		thisMaxZ = z1+len/2;
+    thisMinZ = z1-lenZ/2;
+    thisMaxZ = z1+lenZ/2;
 
-		if(thisMinZ >= maxZ || thisMaxZ <= minZ) // 
-		{
-      alert("GAME OVER! Your Highscore is " + level);
+    thisMinX = x1-lenX/2;
+    thisMaxX = x1+lenX/2;
 
-      var name = prompt("Please enter you name","Anon");
-
-      if(!name.includes("<") && level > 20)
+		if(thisMinZ >= maxZ || thisMaxZ <= minZ || thisMinX >= maxX || thisMaxX <= minX) // 
       {
-          var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-          var theUrl = "/update";
-          xmlhttp.open("POST", theUrl);
-          xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-          xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
-      }
+
+      alert("GAME OVER! Your Highscore is " + level);
+      var name = prompt("Please enter you name","Anon");
+      var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+      var theUrl = "/update";
+      xmlhttp.open("POST", theUrl);
+      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
+  
 
       location.reload();
       // oyun sıfırlanır.
       };
 
-		if(thisMinZ > minZ) 
-		minZ = thisMinZ;
-		else if(thisMaxZ < maxZ)
-		maxZ = thisMaxZ;
-
-		len = (maxZ-minZ)/2;
-		
-		//gui.set_radius(len*2+6);
-
+    if(thisMinZ > minZ) 
+    minZ = thisMinZ;
+    else if(thisMaxZ < maxZ)
+    maxZ = thisMaxZ;
+    else if(thisMinX > minX) 
+    minX = thisMinX;
+    else if(thisMaxX < maxX)
+    maxX = thisMaxX;
+  
+    lenX = (maxX-minX);
+    lenZ = (maxZ-minZ);
+	
 
 		delete gameObjects[level-1];
-		//creating a new obj without script.
-		gameObjects[level-1] = new Cube(
-		level,
-		gl,
-		buff,
-		new Transform({
-			translation: translate(-4, (0.5), (maxZ+minZ)/2),
-			scaling: scalem(2, 0.5, maxZ-minZ)
-			})
-		);
+    //creating a new obj without script.
+    gameObjects[level-1] = new Cube(
+    level,
+    gl,
+    buff,
+    new Transform({
+      translation: translate((maxX+minX)/2, -0.1, (maxZ+minZ)/2),
+      scaling: scalem(maxX-minX, 0.1, maxZ-minZ)
+      })
+    );
 
-		for (gameObject of Object.values(gameObjects)) {
-			t = gameObject.transform.translation;
-			x = t[0][3];
-			y = t[1][3];
-			z = t[2][3];
+    for (gameObject of Object.values(gameObjects)) {
+      t = gameObject.transform.translation;
+      x = t[0][3];
+      y = t[1][3];
+      z = t[2][3];
 
-			gameObject.transform.translation = translate(x,y-0.5,z);
-		}
-		
-		buff = vec4(Math.random()+0.2, Math.random(), Math.random(), 1.0);
+      gameObject.transform.translation = translate(x,y-0.1,z);
+    }
+    
+    buff = vec4(Math.random()+0.2, Math.random(), Math.random(), 1.0);
 
-		gameObjects[level] = new Cube(
-		level,
-		gl,
-		buff,
-		new Transform({
-		translation: translate(-4, (0.5), -4),
-		scaling: scalem(2, 0.5, maxZ-minZ) // z değeri degğişecek
-		})
-		);
+    if(right_side)
+    {
+      
+      gameObjects[level] = new Cube(
+        level,
+        gl,
+        buff,
+        new Transform({
+        translation: translate((maxX+minX)/2, -0.1, 2),
+        scaling: scalem(maxX-minX, 0.1, maxZ-minZ) // z değeri degğişecek
+        })
+      );
+    
+      script = new RightScript();
+      script.gameObject = gameObjects[level];
+      script.gameObjects = this.gameObjects;
+      gameObjects[level].component.script = script;
 
-		script = new BlueCubeScript();
-		script.gameObject = gameObjects[level];
-		script.gameObjects = this.gameObjects;
-		gameObjects[level].component.script = script;
+      right_side=false;
+      
+    }
+    else
+    {
+      
+      gameObjects[level] = new Cube(
+        level,
+        gl,
+        buff,
+        new Transform({
+        translation: translate(2, -0.1, (maxZ+minZ)/2),
+        scaling: scalem(maxX-minX, 0.1, maxZ-minZ) // z değeri degğişecek
+        })
+        );
+    
+        script = new LeftScript();
+        script.gameObject = gameObjects[level];
+        script.gameObjects = this.gameObjects;
+        gameObjects[level].component.script = script;
 
-		level++;
+        right_side=true;
+        
+    }
+  
+  level++;
 
-		if(level>15)
-			delete gameObjects[level-15];
+  if(level>15)
+    delete gameObjects[level-15];
 
-		console.log(level);
+  console.log(level);
       
   	};
 
@@ -529,13 +601,25 @@ function render(gl, gameObjects, gui, timestamp, level) {
     gui.theta.slider.value * (Math.PI / 180),
     gui.phi.slider.value * (Math.PI / 180)
   );
+  
   const viewMatrix = lookAt(eye, at, up);
-  const projectionMatrix = perspective(
+
+  /* 
+  // for perspective projection
+  const projectionMatrix = perspective( 
     gui.fovy.slider.value,
     gui.aspect.slider.value,
     gui.near.slider.value,
     gui.far.slider.value
   );
+  */
+
+  // for ortographic projection
+  const projectionMatrix = ortho( left,right,bottom,ytop,
+    gui.near.slider.value,
+    gui.far.slider.value
+  );
+
 
   //// draw all objects
   for (const gameObject of Object.values(gameObjects)) {
@@ -616,15 +700,14 @@ class Hr {
 }
 class GUI {
   constructor(aspect) {
-
     new Hr("cam-props");
     new Text("Camera Position", "cam-props");
     new Br("cam-props");
     this.radius = new Slider("radius", 0.05, 100, 1, 10, "cam-props");
     new Br("cam-props");
-    this.theta = new Slider("theta", -180, 180, 1, -90, "cam-props");
+    this.theta = new Slider("theta", -180, 180, 1, -130, "cam-props");
     new Br("cam-props");
-    this.phi = new Slider("phi", -180, 180, 1, -15, "cam-props");
+    this.phi = new Slider("phi", -180, 180, 1, -30, "cam-props");
 
     new Hr("cam-props");
     new Text("Camera Projection", "cam-props");
@@ -637,8 +720,6 @@ class GUI {
     new Br("cam-props");
     this.aspect = new Slider("aspect", 0.01, 10, 0.1, aspect, "cam-props");
     new Hr("cam-props");
-
-
   }
 
   set_radius(radius)
