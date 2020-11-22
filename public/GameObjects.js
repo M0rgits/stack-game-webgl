@@ -399,7 +399,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
   ////// GameEngine related
   //// update game time
-	window.onclick = function(ev) {
+	window.onkeydown = function(ev) {
     
 		gameObjects[level-1].component.script.isdead = true;
 		t1 = gameObjects[level-1].transform.translation;
@@ -416,7 +416,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
       var name = prompt("Please enter you name","Anon");
 
-      if(!name.includes("<"))
+      if(!name.includes("<") && level > 20)
       {
           var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
           var theUrl = "/update";

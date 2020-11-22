@@ -7,6 +7,38 @@
       src="webgl-utils.js"
     ></script>
 
+    <style>
+
+		#test {
+			width: 1000px;
+			height:100%;
+			margin: 0px auto;
+		}
+
+        .vertical-menu {
+          width: 100%; /* Set a width if you like */
+        }
+
+        .vertical-menu a {
+          background-color: #1a1e21; /* Grey background color */
+          color: white; /* Black text color */
+          display: block; /* Make the links appear below each other */
+          padding: 10px; /* Add some padding */
+          text-decoration: none; /* Remove underline from links */
+		  font-size: 20px;
+        }
+
+        .vertical-menu a:hover {
+          background-color: #ccc; /* Dark grey background on mouse-over */
+        }
+
+        .vertical-menu a.active {
+          background-color: #4CAF50; /* Add a green color to the "active/current" link */
+          color: white;
+        }
+
+	</style>
+	
     <script
       type="text/javascript"
       src="MV.js"
@@ -14,34 +46,44 @@
     <script type="text/javascript" src="GameObjects.js"></script>
   </head>
 
-  <body bgcolor="gray">
+  <body bgcolor="#191919">
     <script>
       var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+      xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           // Typical action to be performed when the document is ready:
-          string = '';
+		  string = '';
+		  var i=1;
           for(const user of JSON.parse(xhttp.responseText)) {
-            string += user.name + ' ' + user.score;
-            string += '<br>';
+            string += '<a>' + i + '. '+ user.name + ' <span style="float:right;">' + user.score + '</span></a>';
+			string += '<br>';
+			i++;
           }
           console.log(string);
           document.getElementById("demo").innerHTML = string;
         }
-    };
-xhttp.open("GET", "/update", true);
-xhttp.send();
-    </script>
-    <div style=" display: flex;">
-      <canvas id="canvas1" width="600" height="800">
+      };
+      xhttp.open("GET", "/update", true);
+      xhttp.send();
+	</script>
+	
+    <div id="test" style=" display: flex;">
+     	 <canvas id="canvas1" width="600" height="800">
         This browser does not support canvas element!
-      </canvas>
+      	</canvas>
 
-      <div id="demo" style="float:right;">
-      </div>
+      	<div style="float:right; width: 100%;">
+			
+			<h1 style="color: white;"> SCOREBOARD (TOP 10) </h1>
+
+			<div id="demo" class="vertical-menu">
+
+			</div>
+
+      	</div>
     </div>
     <div valign="top" style="display: none;">
-      Camera
+      
       <div id="cam-props" ></div>
     </div>
     
