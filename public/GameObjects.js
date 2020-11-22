@@ -439,7 +439,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
   ////// GameEngine related
   //// update game time
-	window.onkeydown = function(ev) {
+	window.onclick = window.onkeydown = function(ev) {
     
     t1 = gameObjects[level-1].transform.translation;
 		z1 = t1[2][3];
