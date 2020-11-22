@@ -15,6 +15,18 @@
 			margin: 0px auto;
 		}
 
+		#num1{
+			background-color: rgb(211, 179, 0);
+		}
+
+		#num2{
+			background-color: rgb(182, 176, 176);
+		}
+
+		#num3{
+			background-color: rgb(117, 53, 24);
+		}
+
         .vertical-menu {
           width: 100%; /* Set a width if you like */
         }
@@ -55,7 +67,7 @@
 		  string = '';
 		  var i=1;
           for(const user of JSON.parse(xhttp.responseText)) {
-            string += '<a>' + i + '. '+ user.name + ' <span style="float:right;">' + user.score + '</span></a>';
+            string += '<a id="num' + i + '">' + i + '. '+ user.name + ' <span style="float:right;">' + user.score + '</span></a>';
 			string += '<br>';
 			i++;
           }
