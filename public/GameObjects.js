@@ -102,7 +102,7 @@ class Hierarchy {
     gameObjects[0] = new Cube( // first ground plate
       0,                     
       gl,
-      vec4(1, 0.40, 0.80, 1.0),
+      vec4(0, 0.80, 0.2, 1.0),
       new Transform({
         translation: translate(0, -0.2, 0),
         scaling: scalem(0.8, 0.1, 0.8)
@@ -433,7 +433,7 @@ var maxZ=0.4;
 var minX=-0.4;
 var maxX=0.4;
 var right_side=true;
-var buff= vec4(1,0.5,1,1);
+var buff= vec4(0, 0.9, 0.1, 1.0);
 
 function render(gl, gameObjects, gui, timestamp, level) {
 
@@ -504,7 +504,7 @@ function render(gl, gameObjects, gui, timestamp, level) {
       gameObject.transform.translation = translate(x,y-0.1,z);
     }
     
-    buff = vec4(Math.random()+0.2, Math.random(), Math.random(), 1.0);
+    buff = vec4(level/50, (50-level)/50, 0, 0.5);
 
     if(right_side)
     {
@@ -749,7 +749,23 @@ function cubePointsAndColors(color) {
   const points = [];
   const colors = [];
   const vertices = cubeVertices();
-  const colorList = [color, color, color, color, color, color, color, color];
+
+  color2 = color;
+  color2 = vec4(0.2,0.2,0.2,1);
+
+  const colorList = [color2, color, color, color2, color2, color, color, color2];
+  /*
+  const colorList = [
+    vec4(1, 1, 1, 1.0),
+    vec4(0, 0, 0, 1.0),
+    vec4(0, 0, 0, 1.0),
+    vec4(1, 1, 1, 1.0),
+    vec4(1, 1, 1, 1.0),
+    vec4(0, 0, 0, 1.0),
+    vec4(0, 0, 0, 1.0),
+    vec4(1, 1, 1, 1.0)
+    
+  ]*/
 
   // each 3 index is a triangle. each 6 index is a face.
   // prettier-ignore
