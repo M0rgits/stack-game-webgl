@@ -16,7 +16,7 @@ var port = process.env.PORT || 8080;
 
 // viewed at http://localhost:port
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/public/ShootExample.html'));
+    res.sendFile(path.join(__dirname + '/public/stack-game.html'));
 });
 
 const dbURI = 'mongodb+srv://admin:admin@cluster0.mfpj7.mongodb.net/database';
