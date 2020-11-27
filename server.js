@@ -33,8 +33,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     },
     score: {
-    type: Number,
-    required: [true, 'Please enter a password'],
+    type: Number
     }
 });
 

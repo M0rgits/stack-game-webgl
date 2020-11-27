@@ -454,23 +454,18 @@ function render(gl, gameObjects, gui, timestamp, level) {
     thisMaxX = x1+lenX/2;
 
 		if(thisMinZ >= maxZ || thisMaxZ <= minZ || thisMinX >= maxX || thisMaxX <= minX) // 
-      {
-
+    {
       alert("GAME OVER! Your Highscore is " + level);
       var name = prompt("Please enter you name","Anon");
 
-      if(level > 40)
-      {
-        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-        var theUrl = "/update";
-        xmlhttp.open("POST", theUrl);
-        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
-      }
-
+      var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+      var theUrl = "/update";
+      xmlhttp.open("POST", theUrl);
+      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
       location.reload();
       // oyun sıfırlanır.
-      };
+    };
 
     if(thisMinZ > minZ) 
     minZ = thisMinZ;
