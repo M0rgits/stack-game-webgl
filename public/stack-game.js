@@ -458,12 +458,15 @@ function render(gl, gameObjects, gui, timestamp, level) {
 
       alert("GAME OVER! Your Highscore is " + level);
       var name = prompt("Please enter you name","Anon");
-      var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-      var theUrl = "/update";
-      xmlhttp.open("POST", theUrl);
-      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
-  
+
+      if(level > 40)
+      {
+        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+        var theUrl = "/update";
+        xmlhttp.open("POST", theUrl);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlhttp.send(JSON.stringify({ "name": name, "highscore": level }));
+      }
 
       location.reload();
       // oyun sıfırlanır.
