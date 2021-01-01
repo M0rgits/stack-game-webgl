@@ -19,7 +19,7 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/public/stack-game.html'));
 });
 
-const dbURI = 'mongodb+srv://admin:admin@cluster0.mfpj7.mongodb.net/database';
+const dbURI = 'mongodb+srv://admin:.. your database';
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
   .then((result) => {
